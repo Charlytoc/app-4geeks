@@ -1,7 +1,10 @@
 /* eslint-disable max-len */
 import {
-  Box, Button, FormLabel, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useToast, useColorModeValue, useDisclosure,
+  Badge,  Box, Button, FormLabel, Input, Link, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Text, Textarea, useToast, useColorModeValue, useDisclosure,
 } from '@chakra-ui/react';
+import { WarningTwoIcon } from "@chakra-ui/icons";
+import { ChevronRightIcon } from "@chakra-ui/icons";
+import { ChatIcon } from "@chakra-ui/icons";
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
 // import { Formik, Form, Field } from 'formik';
@@ -214,6 +217,23 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
   const [comment, setComment] = useState('');
   const fullName = `${currentTask?.user?.first_name} ${currentTask?.user?.last_name}`;
   const commonBorderColor = useColorModeValue('gray.250', 'gray.500');
+  const [numberOfReviews, setNumberOfReviews] = useState(0);
+
+  const fetchNumberOfReviews = async () => {
+    try {
+      const response = await fetch(`https://8000-charlytoc-rigobot-m53ne552kx6.ws-us96b.gitpod.io/v1/finetuning/get/revisions?repo=${projectLink}`);
+      const data = await response.json();
+      setNumberOfReviews(data.length);
+      console.log(data)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchNumberOfReviews();
+  }, []);
+
 
   const ReviewButton = ({ type }) => {
     const statusColor = {
@@ -308,13 +328,28 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6} px={{ base: '10px', md: '35px' }}>
+          <Box display="flex" alignItems='center' pt={4} pb={5} bg="#FFB718" p={3} borderRadius="md" fontSize="sm" fontWeight={"700"}>
+          <WarningTwoIcon mr={2} color="yellow.800" />
+            This project needs to have at least 3 code reviews in order to be accepted or rejected
+          </Box>
             <Box display="flex" flexDirection="column" pt={4} pb={5}>
               <Text>{fullName}</Text>
               <Link href={projectLink} fontWeight="700" width="fit-content" letterSpacing="0.05em" target="_blank" rel="noopener noreferrer" color="blue.default">
                 {currentTask.title}
               </Link>
             </Box>
-            <Textarea onChange={(e) => setComment(e.target.value)} placeholder={t('review-assignment.comment-placeholder')} fontSize="14px" height="128px" />
+
+            <Box display="flex" flexDirection="column" pt={4} pb={5} bg="#EEF9FE" >
+              <Text>
+              <ChatIcon mr={2} boxSize={6} color="gray.300" />
+                0 code reviews</Text>
+              <Link href={`https://8000-charlytoc-rigobot-m53ne552kx6.ws-us96b.gitpod.io/review/repo?repo=${projectLink}`} fontWeight="700" width="fit-content" letterSpacing="0.05em" target="_blank" rel="noopener noreferrer" color="blue.default">
+                Start code review 
+                <ChevronRightIcon ml={2} color="#0097CF" boxSize={4} />
+              </Link>
+            </Box>
+            {numberOfReviews >= 3 && <>
+              <Textarea onChange={(e) => setComment(e.target.value)} placeholder={t('review-assignment.comment-placeholder'+'partimos 1.sd')} fontSize="14px" height="128px" />
             <Box pt={6} display="flex" flexDirection="row" justifyContent="space-between">
               {['reject', 'approve'].map((type) => (
                 <Fragment key={type}>
@@ -322,6 +357,7 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
                 </Fragment>
               ))}
             </Box>
+            </>}
           </ModalBody>
         </ModalContent>
       </Modal>
