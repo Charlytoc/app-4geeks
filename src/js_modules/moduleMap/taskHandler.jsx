@@ -142,20 +142,17 @@ export const ButtonHandlerByTaskStatus = ({
   } = useStyle();
   const toast = useToast();
 
-  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us97.gitpod.io'
+  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us96b.gitpod.io'
 
  const sendProjectForReview = (githubUrl) => {
   const body = {
     repo_url: githubUrl,
     how_many_commits: 3,
   }
-  axios.post(`${rigobotURL}/v1/finetuning/review/repo/`, body, {
-    headers: {
-      Authorization: `Bearer <RIGOBOT USER TOKEN>`
-    }
-  })
+  axios.post(`${rigobotURL}/v1/finetuning/review/repo/`, body)
     .then(response => {
-      console.log(response)
+      console.log(response.data);
+      
     })
     .catch(error => {
       console.log(error)
@@ -443,6 +440,7 @@ export const ButtonHandlerByTaskStatus = ({
                     onSubmit={() => {
                       setIsSubmitting(true);
                       if (githubUrl !== '') {
+                        sendProjectForReview(githubUrl);
                         sendProject({ task: currentTask, githubUrl });
                         setIsSubmitting(false);
                         onClickHandler();
