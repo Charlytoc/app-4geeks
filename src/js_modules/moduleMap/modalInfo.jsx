@@ -31,8 +31,22 @@ const ModalInfo = ({
   const commonInputColor = useColorModeValue('gray.default', 'gray.300');
   const commonInputActiveColor = useColorModeValue('gray.800', 'gray.100');
   const commonHighlightColor = useColorModeValue('gray.250', 'darkTheme');
-  const [numberOfReviews, setNumberOfReviews] = useState(1);
+  const [numberOfReviews, setNumberOfReviews] = useState(3);
   const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us97.gitpod.io';
+
+  const fetchNumberOfReviews = async () => {
+    try {
+      // const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=${projectLink}`);
+      const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=${githubUrl}`);
+      const data = await response.json();
+      setNumberOfReviews(data.length);
+      console.log(data.length)
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   const rejectFunction = () => {
     if (forceHandler) {
       setConfirmRejection(true);
@@ -141,7 +155,9 @@ const ModalInfo = ({
             <Box display="flex" flexDirection="column" pt={4} pb={5} bg="#EEF9FE" >
               <Text>
               <ChatIcon mr={2} boxSize={6} color="gray.300" />
-                  You have received {numberOfReviews} code reviews</Text>
+                  You have received {numberOfReviews} code reviews
+                  {githubUrl}
+                  </Text>
               <Link href={`${rigobotURL}/review/repo?repo=${githubUrl}`} fontWeight="700" width="fit-content" letterSpacing="0.05em" target="_blank" rel="noopener noreferrer" color="blue.default">
                 Read and rate the feedback
                 <ChevronRightIcon ml={2} color="#0097CF" boxSize={4} />
