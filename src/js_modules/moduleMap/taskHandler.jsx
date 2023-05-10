@@ -18,7 +18,7 @@ import { formatBytes } from '../../utils';
 import MarkDownParser from '../../common/components/MarkDownParser';
 import iconDict from '../../common/utils/iconDict.json';
 import { usePersistent } from '../../common/hooks/usePersistent';
-
+import axios from 'axios';
 export const TextByTaskStatus = ({ currentTask, t }) => {
   const taskIsAproved = currentTask?.revision_status === 'APPROVED';
   // task project status
@@ -36,6 +36,7 @@ export const TextByTaskStatus = ({ currentTask, t }) => {
         <>
           <Icon icon="verified" color="#606060" width="20px" />
           {t('common:taskStatus.project-approved')}
+
         </>
       );
     }
@@ -140,6 +141,26 @@ export const ButtonHandlerByTaskStatus = ({
     featuredColor, modal, hexColor, lightColor,
   } = useStyle();
   const toast = useToast();
+
+  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us97.gitpod.io'
+
+ const sendProjectForReview = (githubUrl) => {
+  const body = {
+    repo_url: githubUrl,
+    how_many_commits: 3,
+  }
+  axios.post(`${rigobotURL}/v1/finetuning/review/repo/`, body, {
+    headers: {
+      Authorization: `Bearer <RIGOBOT USER TOKEN>`
+    }
+  })
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error)
+    })
+}
 
   const howToSendProjectUrl = 'https://4geeksacademy.notion.site/How-to-deliver-a-project-e1db0a8b1e2e4fbda361fc2f5457c0de';
   const TaskButton = () => (

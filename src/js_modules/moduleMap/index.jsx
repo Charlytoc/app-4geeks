@@ -70,6 +70,7 @@ const ModuleMap = ({
           textTransform="uppercase"
           textAlign="right"
         >
+         
           {t('modules.activitiesLength', { count: filteredModules.length })}
         </Heading>
       </Box>

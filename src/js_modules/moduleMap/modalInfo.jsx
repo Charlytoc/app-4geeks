@@ -3,6 +3,8 @@ import {
   ModalBody, ModalFooter, useColorModeValue, FormControl, Input, FormErrorMessage,
   Link,
 } from '@chakra-ui/react';
+import { ChatIcon, ChevronRightIcon } from "@chakra-ui/icons";
+
 import useTranslation from 'next-translate/useTranslation';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
@@ -29,7 +31,8 @@ const ModalInfo = ({
   const commonInputColor = useColorModeValue('gray.default', 'gray.300');
   const commonInputActiveColor = useColorModeValue('gray.800', 'gray.100');
   const commonHighlightColor = useColorModeValue('gray.250', 'darkTheme');
-
+  const [numberOfReviews, setNumberOfReviews] = useState(1);
+  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us97.gitpod.io';
   const rejectFunction = () => {
     if (forceHandler) {
       setConfirmRejection(true);
@@ -113,6 +116,7 @@ const ModalInfo = ({
               <Box margin="15px 0 0 0" padding="12px 16px" background={commonHighlightColor} display="flex" flexDirection="column" gridGap="0px">
                 <Text size="l" fontWeight="700" color={useColorModeValue('gray.800', 'gray.light')}>
                   {t('modalInfo.rejected.teacher-feedback')}
+                  
                 </Text>
                 <Text
                   size="l"
@@ -134,7 +138,15 @@ const ModalInfo = ({
                 </Text>
               </Box>
             )}
-
+            <Box display="flex" flexDirection="column" pt={4} pb={5} bg="#EEF9FE" >
+              <Text>
+              <ChatIcon mr={2} boxSize={6} color="gray.300" />
+                  You have received {numberOfReviews} code reviews</Text>
+              <Link href={`${rigobotURL}/review/repo?repo=${githubUrl}`} fontWeight="700" width="fit-content" letterSpacing="0.05em" target="_blank" rel="noopener noreferrer" color="blue.default">
+                Read and rate the feedback
+                <ChevronRightIcon ml={2} color="#0097CF" boxSize={4} />
+              </Link>
+            </Box>
             {Array.isArray(attachment) && attachment.length > 0 ? (
               <Box mt="10px">
                 <Text size="l" mb="8px">
