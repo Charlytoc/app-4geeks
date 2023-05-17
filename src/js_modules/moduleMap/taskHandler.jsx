@@ -141,7 +141,7 @@ export const ButtonHandlerByTaskStatus = ({
     featuredColor, modal, hexColor, lightColor,
   } = useStyle();
   const toast = useToast();
-  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us96b.gitpod.io'
+  const rigobotURL = 'https://8000-charlytoc-rigobot-91hkkq2c2ql.ws-us97.gitpod.io'
 
 
  const sendProjectForReview = (githubUrl) => {

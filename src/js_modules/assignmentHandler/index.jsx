@@ -219,13 +219,13 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
   const fullName = `${currentTask?.user?.first_name} ${currentTask?.user?.last_name}`;
   const commonBorderColor = useColorModeValue('gray.250', 'gray.500');
   const [numberOfReviews, setNumberOfReviews] = useState(0);
-  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us97.gitpod.io'
+  const rigobotURL = 'https://8000-charlytoc-rigobot-91hkkq2c2ql.ws-us97.gitpod.io'
 
   const fetchNumberOfReviews = async () => {
     try {
       // const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=${projectLink}`);
 
-      const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=https://github.com/Charlytoc/react-flask-template`);
+      const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=${projectLink}`);
       const data = await response.json();
       setNumberOfReviews(data.length);
       console.log(data.length)
@@ -234,9 +234,9 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
     }
   };
 
-  useEffect(() => {
-    fetchNumberOfReviews();
-  }, []);
+  // useEffect(() => {
+  //   fetchNumberOfReviews();
+  // }, []);
 
 
   const ReviewButton = ({ type }) => {
@@ -260,6 +260,7 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
       approve: t('alert-message:review-assignment-approve'),
       reject: t('alert-message:review-assignment-reject'),
     };
+
     return (
       <Button
         background={buttonColor[type]}
@@ -336,15 +337,15 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
           numberOfReviews >= 3 
           ? 
           <Box display="flex" alignItems='start' flexDirection={'column'} pt={4} pb={4} bg="#EEF9FE" p={3} borderRadius="md" fontSize="sm" fontWeight={"700"}>
-            This project already has 3 code reviews; you can continue reviewing the code or approve/reject the entire project.
+            {t('This project already has 3 code reviews; you can continue reviewing the code or approve/reject the entire project.')}
             <Link href={projectLink} fontWeight="700" width="fit-content" letterSpacing="0.05em" target="_blank" rel="noopener noreferrer" color="blue.default">
-              Learn more about code reviews at 4Geeks.
+              {t('Learn more about code reviews at 4Geeks.')}
             </Link>
           </Box>
           :
           <Box display="flex" alignItems='center' pt={4} pb={5} bg="#FFB718" p={3} borderRadius="md" fontSize="sm" fontWeight={"700"}>
             <WarningTwoIcon mr={2} color="yellow.800" />
-            This project needs to have at least 3 code reviews in order to be accepted or rejected
+            {t('This project needs to have at least 3 code reviews in order to be accepted or rejected')}
           </Box> 
         }
             <Box display="flex" flexDirection="column" pt={4} pb={5}>
@@ -359,7 +360,7 @@ const ReviewModal = ({ currentTask, projectLink, updpateAssignment }) => {
               <ChatIcon mr={2} boxSize={6} color="gray.300" />
                 {numberOfReviews} code reviews</Text>
               <Link href={`${rigobotURL}/review/repo?repo=${projectLink}`} fontWeight="700" width="fit-content" letterSpacing="0.05em" target="_blank" rel="noopener noreferrer" color="blue.default">
-                Start code review 
+                {t('Start code review ')}
                 <ChevronRightIcon ml={2} color="#0097CF" boxSize={4} />
               </Link>
             </Box>
@@ -402,7 +403,7 @@ const ButtonHandler = ({
       ],
     });
   };
-
+  console.log(currentTask, "this is current tasks")
   // const fullName = `${currentTask?.user?.first_name} ${currentTask?.user?.last_name}`;
 
   if (currentTask && currentTask.task_type) {

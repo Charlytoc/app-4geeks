@@ -8,7 +8,7 @@ import { ChatIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import useTranslation from 'next-translate/useTranslation';
 import { Formik, Form, Field } from 'formik';
 import PropTypes from 'prop-types';
-import { useState, memo } from 'react';
+import { useState, memo, useEffect } from 'react';
 import Text from '../../common/components/Text';
 import validationSchema from '../../common/components/Forms/validationSchemas';
 import MarkDownParser from '../../common/components/MarkDownParser';
@@ -31,12 +31,12 @@ const ModalInfo = ({
   const commonInputColor = useColorModeValue('gray.default', 'gray.300');
   const commonInputActiveColor = useColorModeValue('gray.800', 'gray.100');
   const commonHighlightColor = useColorModeValue('gray.250', 'darkTheme');
-  const [numberOfReviews, setNumberOfReviews] = useState(3);
-  const rigobotURL = 'https://8000-charlytoc-rigobot-2iky3n8vank.ws-us97.gitpod.io';
+  const [numberOfReviews, setNumberOfReviews] = useState(0);
+  const rigobotURL = 'https://8000-charlytoc-rigobot-91hkkq2c2ql.ws-us97.gitpod.io';
+  
 
   const fetchNumberOfReviews = async () => {
     try {
-      // const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=${projectLink}`);
       const response = await fetch(`${rigobotURL}/v1/finetuning/get/revisions?repo=${githubUrl}`);
       const data = await response.json();
       setNumberOfReviews(data.length);
@@ -46,6 +46,9 @@ const ModalInfo = ({
     }
   };
 
+  useEffect(()=>{
+    fetchNumberOfReviews()
+  }, [])
 
   const rejectFunction = () => {
     if (forceHandler) {

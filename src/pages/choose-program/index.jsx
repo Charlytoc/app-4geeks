@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Flex, Box, Button, useToast, Skeleton, useColorModeValue,
+  Flex, Box, Button, useToast, Skeleton, useColorModeValue, Link
 } from '@chakra-ui/react';
 import useTranslation from 'next-translate/useTranslation';
 import { useRouter } from 'next/router';
@@ -26,6 +26,7 @@ import useProgramList from '../../common/store/actions/programListAction';
 import handlers from '../../common/handlers';
 import useSubscriptionsHandler from '../../common/store/actions/subscriptionAction';
 import { PREPARING_FOR_COHORT } from '../../common/store/types';
+import AlertMessage from '../../common/components/AlertMessage';
 
 export const getStaticProps = async ({ locale, locales }) => {
   const t = await getT(locale, 'choose-program');
@@ -68,13 +69,40 @@ function chooseProgram() {
   const commonStartColor = useColorModeValue('gray.300', 'gray.light');
   const commonEndColor = useColorModeValue('gray.400', 'gray.400');
   const TwelveHours = 720;
-
+  const rigobotUrl = 'https://8000-charlytoc-rigobot-9d9en2erelo.ws-us97.gitpod.io'
+  const [isRigobotCommitter, setIsRigobotCommitter] = useState(false)
   const fetchAdmissions = () => bc.admissions().me();
 
   const options = {
     cacheTime: 1000 * 60 * 60, // cache 1 hour
     refetchOnWindowFocus: false,
   };
+
+  const retrieveRigobotStatus = () => {
+    fetch(rigobotUrl+'/v1/finetuning/committer/status/?email=' + user?.email)
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Failed to retrieve committer status');
+        }
+      })
+      .then(data => {
+        // Handle the successful response
+        console.log(data);
+        // Process the retrieved data
+        const message = data.message;
+        const status = data.status;
+        // ...do something with the data...
+      })
+      .catch(error => {
+        // Handle the error
+        console.error(error);
+        // Display an error message or perform error-specific actions
+      });
+  };
+
+
 
   const { isLoading, data: dataQuery, refetch } = useLocalStorageQuery('admissions', fetchAdmissions, { ...options });
 
@@ -108,6 +136,7 @@ function chooseProgram() {
   }, [dataQuery]);
 
   useEffect(() => {
+    retrieveRigobotStatus();
     setSubscriptionLoading(true);
     fetchSubscriptions()
       .then((data) => {
@@ -410,6 +439,19 @@ function chooseProgram() {
                   minWidth={{ base: '100%', sm: '500px', md: '340px' }}
                   margin="0 auto"
                 />
+              )}
+              {user && (
+                 <Box
+                 bg="#FFB718"
+                 p={3}
+                 borderRadius="md"
+                 boxShadow="md"
+                 maxW="400px"
+                 textAlign="center"
+               >
+                 <h2 style={{ fontWeight: "bold" }}>{t('Get feedback from AI!')}</h2>
+                 <Link href={`${rigobotUrl}/v1/finetuning/sign/contract`}>{t('It appears you have not declined or accepted the Rigobot contract')}</Link>
+               </Box>
               )}
             </Box>
           </Flex>
